@@ -10,8 +10,10 @@ if [ ! -f ".env" ]; then
 else
     echo "env file exists."
 fi
-
+composer require laravel/horizon
+php artisan horizon:install
 php artisan migrate
+php artisan migrate --seed
 php artisan optimize
 php artisan view:cache
 
