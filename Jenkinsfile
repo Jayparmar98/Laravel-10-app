@@ -21,13 +21,26 @@ pipeline {
                         values 'app1', 'app2', 'mysql', 'redis'
                     }
                 }
+
                 stages {
                     stage('Build Docker Image') {
                         steps {
                             script {
-                                def fullImage = "jayparmar98/${IMAGE_NAME}:${IMAGE_TAG}"
-                                echo "Building Docker image: ${fullImage}"
-                                bat "docker build -t ${fullImage} ./docker/${IMAGE_NAME}"
+                                def imageMap = [
+                                    app1 : "jayparmar98/app1",
+                                    app2 : "jayparmar98/app2",
+                                    mysql: "jayparmar98/mysql",
+                                    redis: "jayparmar98/redis"
+                                ]
+
+                                def dockerContextPath = IMAGE_NAME in ['mysql', 'redis'] 
+                                    ? "./${IMAGE_NAME}" 
+                                    : "./${IMAGE_NAME}"
+
+                                def fullImage = "${imageMap[IMAGE_NAME]}:${IMAGE_TAG}"
+
+                                echo "📦 Building Docker image: ${fullImage}"
+                                bat "docker build -t ${fullImage} ${dockerContextPath}"
                             }
                         }
                     }
@@ -35,10 +48,20 @@ pipeline {
                     stage('Push Docker Image') {
                         steps {
                             script {
-                                def fullImage = "jayparmar98/${IMAGE_NAME}:${IMAGE_TAG}"
-                                echo "Pushing image: ${fullImage}"
-                                withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                                    bat "echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin"
+                                def imageMap = [
+                                    app1 : "jayparmar98/app1",
+                                    app2 : "jayparmar98/app2",
+                                    mysql: "jayparmar98/mysql",
+                                    redis: "jayparmar98/redis"
+                                ]
+
+                                def fullImage = "${imageMap[IMAGE_NAME]}:${IMAGE_TAG}"
+
+                                withCredentials([usernamePassword(credentialsId: env.DOCKERHUB_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                                    echo "🔐 Logging in to Docker Hub..."
+                                    bat "docker login -u %DOCKER_USER% -p %DOCKER_PASS%"
+
+                                    echo "📤 Pushing image: ${fullImage}"
                                     bat "docker push ${fullImage}"
                                 }
                             }
@@ -51,14 +74,11 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    echo "Applying Kubernetes configurations..."
+                    echo "🚀 Applying Kubernetes configurations..."
                     bat 'kubectl apply -f k8s/app1-deployment.yaml'
                     bat 'kubectl apply -f k8s/app2-deployment.yaml'
                     bat 'kubectl apply -f k8s/mysql-deployment.yaml'
                     bat 'kubectl apply -f k8s/laravel-10-curd-deployment.yaml'
-
-                    // Optionally apply services/configmaps
-                    //bat 'kubectl apply -f k8s/services.yaml'
                     bat 'kubectl apply -f k8s/configmaps/mysql-init-configmap.yaml'
                 }
             }
