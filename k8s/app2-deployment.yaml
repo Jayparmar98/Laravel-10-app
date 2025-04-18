@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app2
+  template:
+    metadata:
+      labels:
+        app: app2
+    spec:
+      containers:
+        - name: app2
+          image: jayparmar98/app2:latest
+          ports:
+            - containerPort: 5002
+          env:
+            - name: DB_HOST
+              value: mysql
+            - name: DB_DATABASE
+              value: laravel2
+            - name: DB_USERNAME
+              value: root
+            - name: DB_PASSWORD
+              value: root
+            - name: REDIS_HOST
+              value: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app2-service
+spec:
+  selector:
+    app: app2
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 5002
+      nodePort: 30002
