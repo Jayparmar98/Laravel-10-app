@@ -48,29 +48,29 @@ pipeline {
             }
         }
 
-    //     stage('Deploy to Kubernetes') {
-    //         steps {
-    //             script {
-    //                 echo "Applying Kubernetes configurations..."
-    //                 bat 'kubectl apply -f k8s/app1-deployment.yaml'
-    //                 bat 'kubectl apply -f k8s/app2-deployment.yaml'
-    //                 bat 'kubectl apply -f k8s/mysql-deployment.yaml'
-    //                 bat 'kubectl apply -f k8s/laravel-10-curd-deployment.yaml'
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    echo "Applying Kubernetes configurations..."
+                    bat 'kubectl apply -f k8s/app1-deployment.yaml'
+                    bat 'kubectl apply -f k8s/app2-deployment.yaml'
+                    bat 'kubectl apply -f k8s/mysql-deployment.yaml'
+                    bat 'kubectl apply -f k8s/laravel-10-curd-deployment.yaml'
 
-    //                 // Optionally apply services/configmaps
-    //                 bat 'kubectl apply -f k8s/services.yaml'
-    //                 bat 'kubectl apply -f k8s/configmaps.yaml'
-    //             }
-    //         }
-    //     }
-    // }
+                    // Optionally apply services/configmaps
+                    //bat 'kubectl apply -f k8s/services.yaml'
+                    bat 'kubectl apply -f k8s/configmaps/mysql-init-configmap.yaml'
+                }
+            }
+        }
+    }
 
-    // post {
-    //     success {
-    //         echo '✅ Deployment succeeded!'
-    //     }
-    //     failure {
-    //         echo '❌ Deployment failed.'
-    //     }
+    post {
+        success {
+            echo '✅ Deployment succeeded!'
+        }
+        failure {
+            echo '❌ Deployment failed.'
+        }
     }
 }
