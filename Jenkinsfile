@@ -3,62 +3,64 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = 'Dockerhub-jenkins' // Jenkins credentials ID
-        DOCKERHUB_REPO = 'jayparmar98/laravel-10-curd'
-        IMAGE_TAG = 'latest' // You can replace this with a Git SHA or build number if needed
-        FULL_IMAGE = "${DOCKERHUB_REPO}:${IMAGE_TAG}"
-        //IMAGE = "laravel-10-App"
+        IMAGE_TAG = 'latest' // Use 'latest', build number, or Git SHA
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'develop', credentialsId: 'github', url: 'https://github.com/Jayparmar98/Laravel-10-Curd.git'
+                git branch: 'develop', credentialsId: 'github', url: 'https://github.com/Jayparmar98/Laravel-10-app.git'
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    echo "Building Docker image: ${FULL_IMAGE}"
-                    bat "docker build -t ${FULL_IMAGE} ."
+        stage('Build and Push Images') {
+            matrix {
+                axes {
+                    axis {
+                        name 'IMAGE_NAME'
+                        values 'app1', 'app2', 'mysql', 'redis'
+                    }
                 }
-            }
-        }
-
-          stage('Push to Docker Hub') {
-            steps {
-                script {
-                    echo "Logging into Docker Hub..."
-                    withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                        bat "echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin"
+                stages {
+                    stage('Build Docker Image') {
+                        steps {
+                            script {
+                                def fullImage = "jayparmar98/${IMAGE_NAME}:${IMAGE_TAG}"
+                                echo "Building Docker image: ${fullImage}"
+                                bat "docker build -t ${fullImage} ./docker/${IMAGE_NAME}"
+                            }
+                        }
                     }
 
-                    echo "Pushing image to Docker Hub..."
-                    bat "docker push ${FULL_IMAGE}"
+                    stage('Push Docker Image') {
+                        steps {
+                            script {
+                                def fullImage = "jayparmar98/${IMAGE_NAME}:${IMAGE_TAG}"
+                                echo "Pushing image: ${fullImage}"
+                                withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                                    bat "echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin"
+                                    bat "docker push ${fullImage}"
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-
-          stage('Deploy with Docker Compose') {
-             steps {
-                 script {
-                     echo "Pulling updated Docker image..."
-                     bat "docker pull ${FULL_IMAGE}"
-
-                     echo "Stopping any existing containers..."
-                     bat "docker-compose down"
-
-                     echo "Starting containers with updated image..."
-                     bat "docker-compose up -d"
-                 }
-             }
-         }
 
     //     stage('Deploy to Kubernetes') {
     //         steps {
-    //             bat 'kubectl apply -f k8s\\deployment.yaml'
-    //             bat 'kubectl apply -f k8s\\service.yaml'
-    //             bat 'kubectl apply -f k8s\\configmap.yaml'
+    //             script {
+    //                 echo "Applying Kubernetes configurations..."
+    //                 bat 'kubectl apply -f k8s/app1-deployment.yaml'
+    //                 bat 'kubectl apply -f k8s/app2-deployment.yaml'
+    //                 bat 'kubectl apply -f k8s/mysql-deployment.yaml'
+    //                 bat 'kubectl apply -f k8s/laravel-10-curd-deployment.yaml'
+
+    //                 // Optionally apply services/configmaps
+    //                 bat 'kubectl apply -f k8s/services.yaml'
+    //                 bat 'kubectl apply -f k8s/configmaps.yaml'
+    //             }
     //         }
     //     }
     // }
