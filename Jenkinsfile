@@ -75,7 +75,7 @@ pipeline {
             steps {
                 script {
                     echo "🚀 Applying Kubernetes configurations..."
-                    //withEnv(["KUBECONFIG=C:/Users/Piu/.kube/config"])
+                    withEnv(["KUBECONFIG=C:\\Users\\Piu\\.kube\\config"])
                     bat 'kubectl apply -f k8s/app1-deployment.yaml'
                     // bat 'kubectl apply -f k8s//app2-deployment.yaml'
                     // bat 'kubectl apply -f k8s//mysql-deployment.yaml'
@@ -93,5 +93,5 @@ pipeline {
         failure {
             echo '❌ Deployment failed.'
         }
-    }
+   }
  }
