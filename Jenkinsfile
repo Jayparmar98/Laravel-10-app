@@ -94,4 +94,5 @@ pipeline {
             echo '❌ Deployment failed.'
         }
     }
+ }
 }
