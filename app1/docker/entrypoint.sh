@@ -6,16 +6,18 @@ fi
 
 if [ ! -f ".env" ]; then
     echo "Creating env file for env $APP_ENV"
-    cp .env.example .env
+    cp .env .env
 else
     echo "env file exists."
 fi
-composer require laravel/horizon
-php artisan horizon:install
+
 php artisan migrate
-php artisan migrate --seed
 php artisan optimize
 php artisan view:cache
+
+# if [ "$APP_ENV" = "local" ]; then
+#     php artisan db:seed
+# fi
 
 php-fpm -D
 nginx -g "daemon off;"

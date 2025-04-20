@@ -57,8 +57,8 @@ RUN chmod -R 755 /var/www/vendor
 RUN usermod --uid 1000 www-data
 RUN groupmod --gid 1001 www-data
 
-EXPOSE 9001
-CMD ["php", "-S", "0.0.0.0:9001", "-t", "public"]
+EXPOSE 5002
+CMD ["php", "-S", "0.0.0.0:5002", "-t", "public"]
 
 # Run the entrypoint file.
-#ENTRYPOINT [ "docker/entrypoint.sh" ]
+ENTRYPOINT [ "docker/entrypoint.sh" ]
