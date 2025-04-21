@@ -6,9 +6,9 @@ fi
 
 if [ ! -f ".env" ]; then
     echo "Creating env file for env $APP_ENV"
-    cp .env.develop .env
+    cp .env.prod .env
 else
-    echo "env file exists."
+    echo "env.prod file exists."
 fi
 php artisan horizon:install
 php artisan migrate:fresh --seed
