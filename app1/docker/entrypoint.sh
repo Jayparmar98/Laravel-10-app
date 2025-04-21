@@ -11,7 +11,7 @@ else
     echo "env file exists."
 fi
 php artisan horizon:install
-#php artisan migrate:fresh --seed
+php artisan migrate:fresh --seed
 php artisan migrate:fresh --seed --seeder=UserSeeder
 php artisan migrate
 php artisan optimize
