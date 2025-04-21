@@ -40,7 +40,7 @@ pipeline {
 
                                 def fullImage = "${imageMap[IMAGE_NAME]}:${IMAGE_TAG}"
 
-                                echo "📦 Building Docker image: ${fullImage}"
+                                echo "Building Docker image: ${fullImage}"
                                 bat "docker build -t ${fullImage} ${dockerContextPath}"
                             }
                         }
@@ -86,7 +86,7 @@ pipeline {
                                 Write-Host "Applying Deployment..."
                                 //kubectl apply -f k8s\\app1-deployment.yaml --validate=false
                                 kubectl apply -f k8s\\mysql-deployment.yaml --validate=false
-                                 kubectl apply -f k8s\\redis-deployment.yaml --validate=false
+                                kubectl apply -f k8s\\redis-deployment.yaml --validate=false
                                 kubectl apply -f k8s\\app1-deployment.yaml --validate=false
                                 kubectl apply -f k8s\\app2-deployment.yaml --validate=false
 
