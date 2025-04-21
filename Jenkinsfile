@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = 'Dockerhub-jenkins' // Jenkins credentials ID
         IMAGE_TAG = 'latest' // Use 'latest', build number, or Git SHA
+         KUBECONFIG = "C:\\Users\\Piu\\.kube\\config"
     }
 
     stages {
@@ -28,9 +29,9 @@ pipeline {
         //                     script {
         //                         def imageMap = [
         //                             app1 : "jayparmar98/app1",
-        //                             // app2 : "jayparmar98/app2",
-        //                             // mysql: "jayparmar98/mysql",
-        //                             // redis: "jayparmar98/redis"
+        //                             app2 : "jayparmar98/app2",
+        //                             mysql: "jayparmar98/mysql",
+        //                             redis: "jayparmar98/redis"
         //                         ]
 
         //                         def dockerContextPath = IMAGE_NAME in ['mysql', 'redis'] 
@@ -50,9 +51,9 @@ pipeline {
         //                     script {
         //                         def imageMap = [
         //                             app1 : "jayparmar98/app1",
-        //                             // app2 : "jayparmar98/app2",
-        //                             // mysql: "jayparmar98/mysql",
-        //                             // redis: "jayparmar98/redis"
+        //                             app2 : "jayparmar98/app2",
+        //                             mysql: "jayparmar98/mysql",
+        //                             redis: "jayparmar98/redis"
         //                         ]
 
         //                         def fullImage = "${imageMap[IMAGE_NAME]}:${IMAGE_TAG}"
@@ -70,21 +71,43 @@ pipeline {
         //         }
         //     }
         // }
+        stage('Kubernetes Info') {
+           steps {
+           powershell 'kubectl get nodes'
+    }
+}
+    //     stage('Deploy to Kubernetes') {
+    //         steps {
+    //             script {
+    //                 echo "🚀 Applying Kubernetes configurations..."
+    //                 //withEnv(["KUBECONFIG=C:\\Users\\Piu\\.kube\\config"])
+    //                 bat "kubectl apply -f k8s/app1-deployment.yaml --validate=false"
+    //                 // bat 'kubectl apply -f k8s//app2-deployment.yaml'
+    //                 // bat 'kubectl apply -f k8s//mysql-deployment.yaml'
+    //                 // bat 'kubectl apply -f k8s//laravel-10-curd-deployment.yaml'
+    //                 // bat 'kubectl apply -f k8s//configmaps//mysql-init-configmap.yaml'
+    //             }
+    //         }
+    //     }
+    // }
 
+
+        stages {
         stage('Deploy to Kubernetes') {
             steps {
-                script {
-                    echo "🚀 Applying Kubernetes configurations..."
-                    //withEnv(["KUBECONFIG=C:\\Users\\Piu\\.kube\\config"])
-                    bat "kubectl apply -f k8s/app1-deployment.yaml --validate=false"
-                    // bat 'kubectl apply -f k8s//app2-deployment.yaml'
-                    // bat 'kubectl apply -f k8s//mysql-deployment.yaml'
-                    // bat 'kubectl apply -f k8s//laravel-10-curd-deployment.yaml'
-                    // bat 'kubectl apply -f k8s//configmaps//mysql-init-configmap.yaml'
-                }
+                powershell '''
+                Write-Host "Checking Kubernetes Context..."
+                kubectl config current-context
+
+                Write-Host "Applying Deployment..."
+                kubectl apply -f k8s\\app1-deployment.yaml --validate=false
+
+                Write-Host "Deployment completed."
+                '''
             }
         }
     }
+}
 
     post {
         success {
