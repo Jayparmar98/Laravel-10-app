@@ -84,7 +84,7 @@ pipeline {
                                 Write-Host "Checking Kubernetes Context..."
                                 kubectl config current-context
                                 Write-Host "Applying Deployment..."
-                                
+    
                                 kubectl apply -f k8s\\configmaps\\mysql-init-configmap.yaml
                                 kubectl apply -f k8s\\mysql-deployment.yaml --validate=false
                                 kubectl apply -f k8s\\redis-deployment.yaml --validate=false
@@ -98,11 +98,11 @@ pipeline {
             }
        }
 
-    post {
-        success {
-            echo '✅ Deployment succeeded!'
-        }
-        failure {
-            echo '❌ Deployment failed.'
-        }
-}
+//     post {
+//         success {
+//             echo '✅ Deployment succeeded!'
+//         }
+//         failure {
+//             echo '❌ Deployment failed.'
+//           }  }
+// }
