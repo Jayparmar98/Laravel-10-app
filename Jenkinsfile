@@ -59,10 +59,10 @@ pipeline {
                                 def fullImage = "${imageMap[IMAGE_NAME]}:${IMAGE_TAG}"
 
                                 withCredentials([usernamePassword(credentialsId: env.DOCKERHUB_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                                    echo "🔐 Logging in to Docker Hub..."
+                                    echo " Logging in to Docker Hub..."
                                     bat "docker login -u %DOCKER_USER% -p %DOCKER_PASS%"
 
-                                    echo "📤 Pushing image: ${fullImage}"
+                                    echo "Pushing image: ${fullImage}"
                                     bat "docker push ${fullImage}"
                                 }
                             }

@@ -52,7 +52,7 @@ RUN chmod -R 755 /var/www/storage/framework/sessions
 RUN chmod -R 755 /var/www/bootstrap
 
 # RUN composer install
-RUN composer require laravel/horizon
+#RUN composer require laravel/horizon
 RUN composer require laravel/horizon --ignore-platform-reqs
 #Verify autoload.php
 RUN ls -l /var/www/vendor/autoload.php 
