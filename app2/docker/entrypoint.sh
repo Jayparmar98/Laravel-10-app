@@ -6,18 +6,16 @@ fi
 
 if [ ! -f ".env" ]; then
     echo "Creating env file for env $APP_ENV"
-    cp .env .env
+    cp .env.example .env
 else
     echo "env file exists."
 fi
-
+php artisan horizon:install
+#php artisan migrate:fresh --seed
+php artisan migrate:fresh --seed --seeder=UserSeeder
 php artisan migrate
 php artisan optimize
 php artisan view:cache
-
-if [ "$APP_ENV" = "local" ]; then
-    php artisan db:seed
-fi
 
 php-fpm -D
 nginx -g "daemon off;"
