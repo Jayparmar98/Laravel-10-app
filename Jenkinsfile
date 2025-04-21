@@ -92,7 +92,7 @@ pipeline {
     // }
 
 
-        stages {
+        
         stage('Deploy to Kubernetes') {
             steps {
                 powershell '''
@@ -116,5 +116,5 @@ pipeline {
         failure {
             echo '❌ Deployment failed.'
         }
-   }
- }
+}
+ 
