@@ -15,6 +15,8 @@ spec:
       containers:
         - name: redis
           image: jayparmar98/redis:latest
+        - name: REDIS_PASSWORD
+          value: secret
           ports:
             - containerPort: 6379
 ---
