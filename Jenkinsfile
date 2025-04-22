@@ -102,11 +102,11 @@ pipeline {
             }
        }
 
-    post {
-        success {
-            echo '✅ Deployment succeeded!'
-        }
-        failure {
-            echo '❌ Deployment failed.'
-          }  }
-}
+//     post {
+//         success {
+//             echo '✅ Deployment succeeded!'
+//         }
+//         failure {
+//             echo '❌ Deployment failed.'
+//           }  }
+// }
