@@ -16,7 +16,11 @@ spec:
         - name: mysql
           image: jayparmar98/mysql:latest
           env:
-            - name: MYSQL_ROOT_PASSWORD
+            - name: DB_DATABASE
+              value: laravel1
+            - name: DB_USERNAME
+              value: root
+            - name: DB_PASSWORD
               value: root
           ports:
             - containerPort: 3306
