@@ -34,7 +34,7 @@ pipeline {
                                     redis: "jayparmar98/redis"
                                 ]
 
-                                def dockerContextPath = IMAGE_NAME in ['mysql', 'redis'] 
+                                def dockerContextPath = IMAGE_NAME in ['mysql', 'redis']
                                     ? "./${IMAGE_NAME}" 
                                     : "./${IMAGE_NAME}"
 

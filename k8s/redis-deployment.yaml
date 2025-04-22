@@ -15,10 +15,11 @@ spec:
       containers:
         - name: redis
           image: jayparmar98/redis:latest
-        - name: REDIS_PASSWORD
-          value: secret
           ports:
             - containerPort: 6379
+          env:
+            - name: REDIS_PASSWORD
+              value: secret  # <-- Set your Redis password here
 ---
 apiVersion: v1
 kind: Service
