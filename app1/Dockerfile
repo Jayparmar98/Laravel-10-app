@@ -7,19 +7,19 @@ ENV PHP_OPCACHE_ENABLE_CLI=0
 ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS=0
 ENV PHP_OPCACHE_REVALIDATE_FREQ=0
 
-# Install system dependencies and Node.js
-RUN apt-get update && apt-get install -y curl git unzip \
-    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs
-
 # Install dependencies.
 RUN apt-get update && apt-get install -y unzip libpq-dev libcurl4-gnutls-dev nginx libonig-dev
 
 # Install PHP extensions.
 RUN docker-php-ext-install mysqli pdo pdo_mysql bcmath curl opcache mbstring
 
+# Install system dependencies and Node.js
+RUN apt-get update && apt-get install -y curl git unzip \
+    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
+
 # Copy composer executable.
-COPY --from=composer:2.3.5 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copy configuration files.
 COPY ./docker/php/php.ini /usr/local/etc/php/php.ini
@@ -52,7 +52,6 @@ RUN chmod -R 755 /var/www/storage/framework/sessions
 RUN chmod -R 755 /var/www/bootstrap
 
 # RUN composer install
-#RUN composer require laravel/horizon
 RUN composer require laravel/horizon --ignore-platform-reqs
 #Verify autoload.php
 RUN ls -l /var/www/vendor/autoload.php 

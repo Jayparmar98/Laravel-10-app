@@ -15,6 +15,7 @@ php artisan migrate:fresh --seed
 php artisan migrate:fresh --seed --seeder=UserSeeder
 php artisan optimize
 php artisan view:cache
+php artisan serve --host=0.0.0.0 --port=9002
 
 php-fpm -D
 nginx -g "daemon off;"

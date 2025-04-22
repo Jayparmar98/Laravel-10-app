@@ -88,6 +88,10 @@ pipeline {
                                 kubectl apply -f k8s\\configmaps\\mysql-init-configmap.yaml
                                 kubectl apply -f k8s\\mysql-deployment.yaml --validate=false
                                 kubectl apply -f k8s\\redis-deployment.yaml --validate=false
+
+                                Write-Host "Sleeping for 10 seconds to let MySQL and Redis initialize..."
+                                Start-Sleep -Seconds 30
+                                
                                 kubectl apply -f k8s\\app1-deployment.yaml --validate=false
                                 kubectl apply -f k8s\\app2-deployment.yaml --validate=false
 
@@ -98,11 +102,11 @@ pipeline {
             }
        }
 
-//     post {
-//         success {
-//             echo '✅ Deployment succeeded!'
-//         }
-//         failure {
-//             echo '❌ Deployment failed.'
-//           }  }
-// }
+    post {
+        success {
+            echo '✅ Deployment succeeded!'
+        }
+        failure {
+            echo '❌ Deployment failed.'
+          }  }
+}
