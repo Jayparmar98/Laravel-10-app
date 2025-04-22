@@ -10,6 +10,9 @@ if [ ! -f ".env" ]; then
 else
     echo "env.develop file exists."
 fi
+
+sleep 1
+
 php artisan horizon:install
 php artisan migrate:fresh --seed
 php artisan migrate:fresh --seed --seeder=UserSeeder
